@@ -8,10 +8,11 @@ I tried out several prototypes of drawing on top the screen with click-through. 
 
 ### Get Started
 
+1. Make sure you have MINECRAFT opened already!
 1. Open the application
-2. Put the application aside, put your window's focus on Minecraft.
-3. Align the greenbox on the **Fishing Bob**
-4. Press **[Left Ctrl]** to get started, tracking will then start.
+1. Put the application aside, put your window's focus on Minecraft.
+1. Align the greenbox on the **Fishing Bob**
+1. Press **[Left Ctrl]** to get started, tracking will then start.
 
 ### How to Quit
 
@@ -21,3 +22,11 @@ I tried out several prototypes of drawing on top the screen with click-through. 
 ### How to Restart
 
 1. You can press and hold **[Left Ctrl]** anytime you want to reset the tracking
+
+---
+
+> Notes on bundling the application:
+>
+> ```
+> pyinstaller --onefile --noconsole --icon=mcfisher.ico main.py
+> ```
