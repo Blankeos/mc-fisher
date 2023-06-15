@@ -6,19 +6,16 @@ from windowcapture import WindowCapture
 from pynput.keyboard import Key, Listener, KeyCode
 import math
 
-import win32gui, win32con
-import re
-
 # --- List Windows ---
-list_of_windows = []
-def winEnumHandler(hwnd, ctx):
-    if win32gui.IsWindowVisible(hwnd):
-        list_of_windows.append(win32gui.GetWindowText(hwnd))
-win32gui.EnumWindows(winEnumHandler, None)
-list_of_windows = list(filter(re.compile("Minecraft+").match, list_of_windows)) # First item should preferably be Minecraft
+# list_of_windows = []
+# def winEnumHandler(hwnd, ctx):
+#     if win32gui.IsWindowVisible(hwnd):
+#         list_of_windows.append(win32gui.GetWindowText(hwnd))
+# win32gui.EnumWindows(winEnumHandler, None)
+# list_of_windows = list(filter(re.compile("Minecraft+").match, list_of_windows)) # First item should preferably be Minecraft
 
 # --- Rest of the Program ---
-wincap = WindowCapture(list_of_windows[0])
+wincap = WindowCapture("Minecraft* 1.19.4 - Multiplayer (3rd-party Server)")
 phase_idx = 0 # 0 = Setting Up, 1 = Initialization; 2 = Automation
 bbox = (438, 521, 93, 62)
 tracker = None
@@ -119,7 +116,7 @@ while (True):
                 screenshot = cv.putText(screenshot, text_str, (int(wincap.w/2) - int(textSize[0][0]/2), textSize[0][1]+20), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1, cv.LINE_AA)
 
                 # Reel Logic:
-                if (ml_enumerator > 35) and (center_tracking_dist > (prev_center_tracking_dist + prev_center_tracking_dist * threshold)):
+                if (ml_enumerator > 40) and (center_tracking_dist > (prev_center_tracking_dist + prev_center_tracking_dist * threshold)):
                     pg.rightClick()
                     phase_idx = 3
                     fish_caught += 1
@@ -146,9 +143,8 @@ while (True):
     elif (phase_idx == 3):
         if (ml_enumerator == 10):
             pg.rightClick()
-            # ml_enumerator = 0
 
-        if (ml_enumerator > 40):
+        if (ml_enumerator > 70):
             phase_idx = 1
             
         ml_enumerator += 1
@@ -162,9 +158,9 @@ while (True):
     cv.imshow("Carlo's Autofisher", screenshot)
 
     # Change Windows Icon
-    hwnd = win32gui.FindWindow(None, "Carlo's Autofisher")
-    icon_path = "mcfisher.ico"
-    win32gui.SendMessage(hwnd, win32con.WM_SETICON, win32con.ICON_BIG, win32gui.LoadImage(None, icon_path, win32con.IMAGE_ICON, 0, 0, win32con.LR_LOADFROMFILE | win32con.LR_DEFAULTSIZE))
+    # hwnd = win32gui.FindWindow(None, "Carlo's Autofisher")
+    # icon_path = "mcfisher.ico"
+    # win32gui.SendMessage(hwnd, win32con.WM_SETICON, win32con.ICON_BIG, win32gui.LoadImage(None, icon_path, win32con.IMAGE_ICON, 0, 0, win32con.LR_LOADFROMFILE | win32con.LR_DEFAULTSIZE))
 
     if cv.waitKey(1) == ord('q'):
         cv.destroyAllWindows()

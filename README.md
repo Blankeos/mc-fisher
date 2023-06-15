@@ -1,6 +1,6 @@
 # 🎣 McFisher
 
-A computer vision-based auto-fishing bot for Minecraft.
+A computer vision-based **auto-fishing bot for Minecraft**. This is more of a learning project rather than for cheating. As this is a computer vision-based bot, this does not install any invasive mods into your Minecraft client, it rather acts like an actual person simulating the same inputs you make from seeing what happens in the game. Not promoting cheating in public servers, I personally use this in our private SMP server.
 
 I used OpenCV + PyAutoGUI
 

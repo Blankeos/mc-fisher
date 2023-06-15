@@ -24,17 +24,17 @@ class WindowCapture():
         self.h = window_rect[3] - window_rect[1]
 
         # account for the window border and titlebar and cut them off
-        border_pixels = 8
-        titlebar_pixels = 30
-        self.w = self.w - (border_pixels * 2)
-        self.h = self.h - titlebar_pixels - border_pixels
-        self.cropped_x = border_pixels
-        self.cropped_y = titlebar_pixels
+        # border_pixels = 1
+        # titlebar_pixels = 10
+        # self.w = self.w - (border_pixels * 2)
+        # self.h = self.h - titlebar_pixels - border_pixels
+        # self.cropped_x = border_pixels
+        # self.cropped_y = titlebar_pixels
 
         # set the cropped coordinates offset so we can translate the screenshot
         # images into actual screen positions
-        self.offset_x = window_rect[0] + self.cropped_x
-        self.offset_y = window_rect[1] + self.cropped_y
+        # self.offset_x = window_rect[0] + self.cropped_x
+        # self.offset_y = window_rect[1] + self.cropped_y
 
 
     def list_window_names(self):
