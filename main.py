@@ -6,7 +6,19 @@ from windowcapture import WindowCapture
 from pynput.keyboard import Key, Listener, KeyCode
 import math
 
-wincap = WindowCapture('Minecraft* 1.19.4 - Singleplayer')
+import win32gui, win32con
+import re
+
+# --- List Windows ---
+list_of_windows = []
+def winEnumHandler(hwnd, ctx):
+    if win32gui.IsWindowVisible(hwnd):
+        list_of_windows.append(win32gui.GetWindowText(hwnd))
+win32gui.EnumWindows(winEnumHandler, None)
+list_of_windows = list(filter(re.compile("Minecraft+").match, list_of_windows)) # First item should preferably be Minecraft
+
+# --- Rest of the Program ---
+wincap = WindowCapture(list_of_windows[0])
 phase_idx = 0 # 0 = Setting Up, 1 = Initialization; 2 = Automation
 bbox = (438, 521, 93, 62)
 tracker = None
@@ -39,6 +51,7 @@ def preprocess_img(img):
 listener = Listener(on_release=on_release, on_press=on_press)
 listener.start()
 
+
 # Main Loop
 while (True):
     screenshot = wincap.get_screenshot()
@@ -60,6 +73,11 @@ while (True):
         text_str = "Press the [Left Ctrl] when you're done"
         textSize = cv.getTextSize(text_str, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)
         screenshot = cv.putText(screenshot, text_str, (int(wincap.w/2) - int(textSize[0][0]/2), int(wincap.h/2)+120), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv.LINE_AA)
+        
+        # Instructions 3:
+        text_str = "You can press [Q] anytime while focusing this window to quit."
+        textSize = cv.getTextSize(text_str, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)
+        screenshot = cv.putText(screenshot, text_str, (int(wincap.w/2) - int(textSize[0][0]/2), int(wincap.h/2)+210), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv.LINE_AA)
     elif (phase_idx == 1):
         # -- Initialize Tracker --
         text_str = "Initializing tracker..."
@@ -120,9 +138,10 @@ while (True):
                 # tracker.init(cache, bbox)
 
         # Automating text:
-        text_str = "Automating!!"
+        text_str = "Automating!"
         textSize = cv.getTextSize(text_str, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)
         screenshot = cv.putText(screenshot, text_str, (int(wincap.w/2) - int(textSize[0][0]/2), int(wincap.h/2)-20), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 1, cv.LINE_AA)
+        
         ml_enumerator += 1
     elif (phase_idx == 3):
         if (ml_enumerator == 10):
@@ -141,6 +160,11 @@ while (True):
     screenshot = cv.putText(screenshot, text_str, (int(wincap.w/2) - int(textSize[0][0]/2), textSize[0][1]*2+40), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1, cv.LINE_AA)
     
     cv.imshow("Carlo's Autofisher", screenshot)
+
+    # Change Windows Icon
+    hwnd = win32gui.FindWindow(None, "Carlo's Autofisher")
+    icon_path = "mcfisher.ico"
+    win32gui.SendMessage(hwnd, win32con.WM_SETICON, win32con.ICON_BIG, win32gui.LoadImage(None, icon_path, win32con.IMAGE_ICON, 0, 0, win32con.LR_LOADFROMFILE | win32con.LR_DEFAULTSIZE))
 
     if cv.waitKey(1) == ord('q'):
         cv.destroyAllWindows()
